@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rts_lab3/services/perception.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 class PerceptionPage extends StatefulWidget {
   PerceptionPage({Key key}) : super(key: key);
@@ -96,6 +97,10 @@ class __PerceptionPageState extends State<PerceptionPage> {
                 [2, 4]
               ], maxIterations, maxTime);
 
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) =>
+                      _buildPopupDialog(context));
               setState(() {
                 w1 = result[0];
                 w2 = result[1];
@@ -134,4 +139,48 @@ class __PerceptionPageState extends State<PerceptionPage> {
       ]),
     );
   }
+}
+
+Widget _buildPopupDialog(BuildContext context) {
+  List<List<double>> y = [];
+  for (var i = 1; i < 100; i++) {
+    var result = new Perception(4, 0.001 * i).learn([
+      [1, 5],
+      [2, 3],
+    ], 10000, 1000);
+    y.add([0.001 * i, result[2]]);
+  }
+  return new AlertDialog(
+    title: const Text('Dependency learn rate to time'),
+    content: new Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          width: 450,
+          height: 450,
+          child: new charts.LineChart(
+              [
+                new charts.Series<List<double>, double>(
+                  id: '1',
+                  colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+                  domainFn: (List<double> data, _) => data[0] * 10,
+                  measureFn: (List<double> data, _) => data[1],
+                  data: y,
+                )
+              ].toList(),
+              animate: false),
+        )
+      ],
+    ),
+    actions: <Widget>[
+      new FlatButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        textColor: Theme.of(context).primaryColor,
+        child: const Text('Close'),
+      ),
+    ],
+  );
 }

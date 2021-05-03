@@ -31,6 +31,7 @@ dependencies:
   flutter_svg: ^0.19.3
   line_icons: 
   provider: ^4.3.3
+  charts_flutter:
 
 dev_dependencies:
   flutter_test:
