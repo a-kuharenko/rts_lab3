@@ -1,6 +1,8 @@
 import 'dart:math';
 
 class Genetics {
+  int mutationCount = 0;
+
   getRandomInt(int max) {
     Random random = new Random();
     return random.nextInt(max);
@@ -104,6 +106,7 @@ class Genetics {
         var mixedGenes = this.mixGene(bestGenes.toList());
         var mutatedGenes = mixedGenes.map(
             (gene) => this.mutation(gene, this.getRandomInt(maxGene), 0.1));
+        this.mutationCount++;
         population..addAll(mutatedGenes);
       }
     }
